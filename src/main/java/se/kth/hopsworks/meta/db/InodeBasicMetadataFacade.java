@@ -29,6 +29,8 @@ public class InodeBasicMetadataFacade extends AbstractFacade<InodeBasicMetadata>
     super(InodeBasicMetadata.class);
   }
 
+//@TransactionManagement(value=TransactionManagementType.CONTAINER)
+//@TransactionAttribute(value=REQUIRES_NEW)
   public int addBasicMetadata(InodeBasicMetadata meta) {
 
     this.em.persist(meta);

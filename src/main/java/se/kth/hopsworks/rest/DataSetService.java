@@ -436,17 +436,40 @@ public class DataSetService {
               "Permission denied: You can not create a folder in "
               + fullPathArray[2]);
     } catch (IOException e) {
+      try {
+        datasetController.deleteDataset(dsRelativePath.toString(), user, project);
+      } catch (IOException ex) {
+        logger.log(Level.WARNING, "Could not delete folder after failed folder creation: " + ex.toString());
+      }
       throw new AppException(Response.Status.INTERNAL_SERVER_ERROR.
               getStatusCode(), "Error while creating directory: " + e.
               getLocalizedMessage());
     } catch (IllegalArgumentException | NullPointerException e) {
+      try {
+        datasetController.deleteDataset(dsRelativePath.toString(), user, project);
+      } catch (IOException ex) {
+        logger.log(Level.WARNING, "Could not delete folder after failed folder creation: " + ex.toString());
+      }
       throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
               "Invalid directory: " + e.getLocalizedMessage());
+    } catch (Exception e) {
+      try {
+        datasetController.deleteDataset(dsRelativePath.toString(), user, project);
+      } catch (IOException ex) {
+        logger.log(Level.WARNING, "Could not delete folder after failed folder creation: " + ex.toString());
+      }
+            throw new AppException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+          "Report a  bug.");
     }
     json.setSuccessMessage("A directory was created at " + dsPath);
     return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(
             json).build();
   }
+  
+  private void cleanupCreatedDirs() {
+    
+  }
+  
 
   @DELETE
   @Path("/{fileName: .+}")
