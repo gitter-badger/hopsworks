@@ -132,7 +132,7 @@ public class SparkYarnRunnerBuilder {
     
     // TODO: vasilis
     //amargs.append(" --spark-history-server ").append(sparkHistoryServerIp);
-    builder.addToAppMasterEnvironment("SPARK_YARN_HISTORYSERVER_ADDRESS", sparkHistoryServerIp);
+    //builder.addToAppMasterEnvironment("SPARK_YARN_HISTORYSERVER_ADDRESS", sparkHistoryServerIp);
     
     
     

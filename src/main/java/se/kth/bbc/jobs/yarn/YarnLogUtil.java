@@ -11,9 +11,12 @@ import java.util.logging.Logger;
 import javax.ejb.EJBException;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.permission.FsAction;
+import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hadoop.yarn.logaggregation.AggregatedLogFormat;
 import org.apache.hadoop.yarn.logaggregation.AggregatedLogFormat.ContainerLogsReader;
+import se.kth.bbc.jobs.jobhistory.JobType;
 import se.kth.bbc.project.fb.Inode;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFileSystemOps;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFsService;
@@ -38,10 +41,11 @@ public class YarnLogUtil {
    * @param src aggregated yarn log path
    * @param dst destination path to copy to
    * @param desiredLogType stderr or stdout
+     * @param jobType
    */
   public static void copyAggregatedYarnLogs(DistributedFsService fsService,
           DistributedFileSystemOps dfs, String src, String dst,
-          String desiredLogType) {
+          String desiredLogType, JobType jobType) {
     long wait = dfs.getConf().getLong(
             YarnConfiguration.LOG_AGGREGATION_RETAIN_SECONDS, 86400);
     PrintStream writer = null;
@@ -63,6 +67,24 @@ public class YarnLogUtil {
           break;
         case SUCCESS:
           writeLogs(dfs, srcs, writer, desiredLogType);
+          //If it is a Spark job, copy unmodified aggregated logs to
+          //special path used by Spark History Server
+          if(jobType == JobType.SPARK){
+              if(!dfs.exists("/user/glassfish/sparklogs")){
+                    dfs.mkdir(new Path("/user/glassfish/sparklogs"), new FsPermission(FsAction.ALL, FsAction.NONE, FsAction.NONE));
+              }
+                           
+              for (String srcLog: srcs){
+                   String[] srcParams = srcLog.split("/");
+                   String appId = srcParams[srcParams.length-2];
+                   String logName = srcParams[srcParams.length-1];
+                   if(!dfs.exists("/user/glassfish/sparklogs/"+appId)){
+                        dfs.mkdir(new Path("/user/glassfish/sparklogs/"+appId), new FsPermission(FsAction.ALL, FsAction.NONE, FsAction.NONE));
+                        dfs.copyInHdfs(new Path(srcLog),
+                                 new Path("/user/glassfish/sparklogs/"+appId+"/"+logName));
+                    }
+              }
+          }
           break;
       }
     } catch (Exception ex) {
