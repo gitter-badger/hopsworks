@@ -338,7 +338,7 @@ public class Settings {
   public static final String SPARK_LOCRSC_APP_JAR = "__app__.jar";
   public static final String SPARK_AM_MAIN = "org.apache.spark.deploy.yarn.ApplicationMaster";
   public static final String SPARK_DEFAULT_OUTPUT_PATH = "Logs/Spark/";
-
+  public static final String SPARK_AGGREGATED_LOG_PATH = "/user/glassfish/sparklogs/";
   //Flink constants
   public static final String FLINK_DEFAULT_OUTPUT_PATH = "Logs/Flink/";
   public static final String FLINK_LOCRSC_SPARK_JAR = "__flink__.jar";

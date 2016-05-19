@@ -20,6 +20,7 @@ import se.kth.bbc.jobs.jobhistory.JobType;
 import se.kth.bbc.project.fb.Inode;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFileSystemOps;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFsService;
+import se.kth.hopsworks.util.Settings;
 
 public class YarnLogUtil {
 
@@ -70,18 +71,18 @@ public class YarnLogUtil {
           //If it is a Spark job, copy unmodified aggregated logs to
           //special path used by Spark History Server
           if(jobType == JobType.SPARK){
-              if(!dfs.exists("/user/glassfish/sparklogs")){
-                    dfs.mkdir(new Path("/user/glassfish/sparklogs"), new FsPermission(FsAction.ALL, FsAction.NONE, FsAction.NONE));
+              if(!dfs.exists(Settings.SPARK_AGGREGATED_LOG_PATH)){
+                    dfs.mkdir(new Path(Settings.SPARK_AGGREGATED_LOG_PATH), new FsPermission(FsAction.ALL, FsAction.NONE, FsAction.NONE));
               }
                            
               for (String srcLog: srcs){
                    String[] srcParams = srcLog.split("/");
                    String appId = srcParams[srcParams.length-2];
                    String logName = srcParams[srcParams.length-1];
-                   if(!dfs.exists("/user/glassfish/sparklogs/"+appId)){
-                        dfs.mkdir(new Path("/user/glassfish/sparklogs/"+appId), new FsPermission(FsAction.ALL, FsAction.NONE, FsAction.NONE));
+                   if(!dfs.exists(Settings.SPARK_AGGREGATED_LOG_PATH + appId)){
+                        dfs.mkdir(new Path(Settings.SPARK_AGGREGATED_LOG_PATH + appId), new FsPermission(FsAction.ALL, FsAction.NONE, FsAction.NONE));
                         dfs.copyInHdfs(new Path(srcLog),
-                                 new Path("/user/glassfish/sparklogs/"+appId+"/"+logName));
+                                 new Path(Settings.SPARK_AGGREGATED_LOG_PATH + appId + "/" + logName));
                     }
               }
           }
