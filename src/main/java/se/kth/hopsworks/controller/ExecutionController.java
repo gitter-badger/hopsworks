@@ -20,9 +20,6 @@ import se.kth.hopsworks.user.model.Users;
 @Stateless
 public class ExecutionController {
 
-  //Controllers
-  @EJB
-  private CuneiformController cuneiformController;
   @EJB
   private SparkController sparkController;
   @EJB

@@ -56,7 +56,6 @@ import se.kth.hopsworks.user.model.Users;
 import se.kth.hopsworks.users.SshkeysFacade;
 import se.kth.hopsworks.util.ConfigFileGenerator;
 import se.kth.hopsworks.util.Settings;
-import se.kth.hopsworks.zeppelin.server.ZeppelinConfigFactory;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NEVER)
@@ -96,8 +95,6 @@ public class ProjectController {
     private DistributedFsService dfs;
     @EJB
     private Settings settings;
-    @EJB
-    private ZeppelinConfigFactory zeppelinConfFactory;
     @EJB
     private HdfsLeDescriptorsFacade hdfsLeDescriptorFacade;
 
@@ -471,7 +468,6 @@ public class ProjectController {
             if (success) {
                 hdfsUsersBean.deleteProjectGroupsRecursive(project, dsInProject);
                 hdfsUsersBean.deleteProjectUsers(project, projectTeam);
-                zeppelinConfFactory.deleteZeppelinConfDir(project.getName());
                 //projectPaymentsHistoryFacade.remove(projectPaymentsHistory);
                 yarnProjectsQuotaFacade.remove(yarnProjectsQuota);
             }

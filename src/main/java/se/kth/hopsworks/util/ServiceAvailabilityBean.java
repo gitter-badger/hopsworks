@@ -21,13 +21,6 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.service.Service;
 import org.apache.hadoop.yarn.client.api.YarnClient;
 import org.apache.hadoop.yarn.client.api.impl.YarnClientImpl;
-import org.elasticsearch.ElasticsearchTimeoutException;
-import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
-import org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.common.unit.TimeValue;
 
 @Singleton
 public class ServiceAvailabilityBean {
@@ -93,28 +86,6 @@ public class ServiceAvailabilityBean {
     } catch (Throwable e) {
       this.resourcemanager = false;
       logger.warning("Resourcemanager appears to be down.");
-    }
-// Check Elastic
-    String addr = this.settings.getElasticIp();
-
-    final org.elasticsearch.common.settings.Settings settings
-        = org.elasticsearch.common.settings.Settings.settingsBuilder()
-        .put("client.transport.sniff", true) //being able to retrieve other nodes 
-        .put("cluster.name", "hops").build();
-
-    Client client = TransportClient.builder().settings(settings).build()
-        .addTransportAddress(new InetSocketTransportAddress(new InetSocketAddress(addr, Settings.ELASTIC_PORT)));
-
-    try {
-      final ClusterHealthResponse healthResponse = client.admin().cluster().prepareHealth()
-          .setWaitForStatus(ClusterHealthStatus.GREEN).setTimeout(TimeValue.timeValueSeconds(5)).execute().actionGet();
-      if (healthResponse.isTimedOut()) {
-        elasticsearch = false;
-      } else {
-        elasticsearch = true;
-      }
-    } catch (final ElasticsearchTimeoutException e) {
-      elasticsearch = false;
     }
 
 // Check P2P Downloader
