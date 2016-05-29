@@ -23,7 +23,7 @@ import org.apache.hadoop.security.UserGroupInformation;
 import se.kth.bbc.lims.Utils;
 import se.kth.hopsworks.util.Settings;
 
-public class DistributedFileSystemOps {
+  public class DistributedFileSystemOps {
 
   private static final Logger logger = Logger.getLogger(
           DistributedFileSystemOps.class.getName());

@@ -29,8 +29,19 @@
     is a 3rd party jar, Glassfish won't exclude from scanning beans/paths we put in beans.xml 
     -->
 
-
-
+    <!--
+	<dependency> 
+      <groupId>org.sonatype.sisu</groupId>
+      <artifactId>sisu-inject-bean</artifactId>
+      <version>2.2.2</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.sonatype.sisu</groupId>
+      <artifactId>sisu-inject-plexus</artifactId>
+      <version>2.2.2</version>
+      </dependency>
+    -->
     <dependency>
       <groupId>com.google.zxing</groupId>
       <artifactId>javase</artifactId>
@@ -85,18 +96,22 @@
       <artifactId>primefaces</artifactId>
       <version>5.1</version>
     </dependency>
-    <!-- io.hops -->
+
     <dependency>
       <groupId>io.hops</groupId>
       <artifactId>hadoop-client</artifactId>
       <version>2.4.0</version>
     </dependency>
 
+
+<!--
     <dependency>
       <groupId>io.hops</groupId>
       <artifactId>erasure-coding</artifactId>
       <version>2.4.0</version>    
     </dependency>
+
+    -->
 
 
     <!--end of io.hops -->
@@ -105,7 +120,49 @@
       <artifactId>json</artifactId>
       <version>20140107</version>
     </dependency>
+    <!--Zeppelin dependencies -->
+    <!--    <dependency>
+      <groupId>org.apache.zeppelin</groupId>
+      <artifactId>zeppelin</artifactId>
+      <version>0.6.0-incubating-SNAPSHOT</version>
+      <type>pom</type>     
+    </dependency>
+    <dependency>
+      <groupId>org.apache.zeppelin</groupId>
+      <artifactId>zeppelin-interpreter</artifactId>
+      <version>0.6.0-incubating-SNAPSHOT</version>      
+    </dependency>
+    <dependency>
+      <groupId>org.apache.zeppelin</groupId>
+      <artifactId>zeppelin-zengine</artifactId>
+      <version>0.6.0-incubating-SNAPSHOT</version>      
+    </dependency>-->
+    <!--    <dependency>		
+      <groupId>org.apache.zeppelin</groupId>		
+      <artifactId>zeppelin-web</artifactId>		
+      <version>0.6.0-incubating-SNAPSHOT</version>      
+      <type>war</type>		
+    </dependency> -->
+    <!-- Apache Shiro -->
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-core</artifactId>
+      <version>1.2.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-web</artifactId>
+      <version>1.2.3</version>
+    </dependency>
+    <!--End of Zeppelin dependencies -->
+    <!--Elastic dependency-->
+    <dependency>
+      <groupId>org.quartz-scheduler</groupId>
+      <artifactId>quartz</artifactId>
+      <version>2.2.1</version>
+    </dependency>
 
+    <!--End of Zeppelin dependencies -->
   </dependencies>
   <build>
     <finalName>hopsworks</finalName>
@@ -235,6 +292,28 @@
           </plugin>
           <!--end yeoman-maven-plugin -->
 
+          <!--maven war plugin -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-war-plugin</artifactId>
+            <version>2.6</version>
+            <configuration>
+              <!--              <overlays>
+                <overlay>
+                  <groupId>org.apache.zeppelin</groupId>
+                  <artifactId>zeppelin-web</artifactId>
+                  <type>war</type>
+                  <targetPath>zeppelin</targetPath>
+                </overlay>
+              </overlays>-->
+              <failOnMissingWebXml>false</failOnMissingWebXml>
+              <webResources>
+                <resource>
+                  <directory>yo/dist</directory>
+                </resource>
+              </webResources>
+            </configuration>
+          </plugin>
           <plugin>
             <artifactId>maven-clean-plugin</artifactId>
             <version>2.5</version>
